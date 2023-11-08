@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'leftIDENTIFIERleftPIPEARGUMENTS ARGUMENT_LIST ARRAY ARRAY_DECLARATION COMMA COMMAND CUR_LPAREN CUR_RPAREN DO ELSEIF ENDFOR ENDIF EQUALS FOR FUNCTION IDENTIFIER IF IN LIST LPAREN NON_NULL PIPE RPAREN THEN WHITESPACE compound_statementfunction_declaration : IDENTIFIER LPAREN RPAREN CUR_LPAREN CUR_RPARENpipeline : IDENTIFIER PIPE IDENTIFIER array_declaration : IDENTIFIER EQUALS LPAREN RPARENnested_if_statement : IF expression THEN compound_statement ELSEIF expression THEN compound_statement ENDIFexpression : IDENTIFIER\n                          | expression COMMA IDENTIFIER\n\n    for_loop : FOR IDENTIFIER IN list_expression DO compound_statement ENDFORlist_expression : IDENTIFIER\n                      | list_expression COMMA IDENTIFIER\n    '
+_lr_signature = 'leftIDENTIFIERleftPIPEARGUMENTS ARGUMENT_LIST ARRAY ARRAY_DECLARATION COMMA COMMAND CUR_LPAREN CUR_RPAREN DO ELSEIF ENDFOR ENDIF EQUALS FOR FUNCTION IDENTIFIER IF IN LIST LPAREN NON_NULL PIPE RPAREN THEN WHITESPACE compound_statementprogram : pipeline\n               | function_declaration\n               | array_declaration\n               | nested_if_statement\n               | expression\n               | for_loop\n               | list_expression\n    pipeline : IDENTIFIER PIPE IDENTIFIER function_declaration : IDENTIFIER LPAREN RPAREN CUR_LPAREN CUR_RPARENarray_declaration : IDENTIFIER EQUALS LPAREN IDENTIFIER RPARENnested_if_statement : IF expression THEN compound_statement ELSEIF expression THEN compound_statement ENDIFexpression : IDENTIFIER\n                          | expression COMMA IDENTIFIER\n\n    for_loop : FOR IDENTIFIER IN list_expression DO compound_statement ENDFORlist_expression : IDENTIFIER\n                      | list_expression COMMA IDENTIFIER\n    '
     
-_lr_action_items = {'IDENTIFIER':([0,],[2,]),'$end':([1,6,],[0,-1,]),'LPAREN':([2,],[3,]),'RPAREN':([3,],[4,]),'CUR_LPAREN':([4,],[5,]),'CUR_RPAREN':([5,],[6,]),}
+_lr_action_items = {'IDENTIFIER':([0,10,11,12,13,14,24,26,34,],[9,18,19,20,21,22,28,30,18,]),'IF':([0,],[10,]),'FOR':([0,],[11,]),'$end':([1,2,3,4,5,6,7,8,9,20,21,22,32,33,39,41,],[0,-1,-2,-3,-4,-5,-6,-7,-12,-13,-16,-8,-9,-10,-14,-11,]),'COMMA':([6,8,9,17,18,20,21,30,31,36,],[12,13,-12,12,-12,-13,-16,-15,13,12,]),'PIPE':([9,],[14,]),'LPAREN':([9,16,],[15,24,]),'EQUALS':([9,],[16,]),'RPAREN':([15,28,],[23,33,]),'THEN':([17,18,20,36,],[25,-12,-13,38,]),'IN':([19,],[26,]),'DO':([21,30,31,],[-16,-15,35,]),'CUR_LPAREN':([23,],[27,]),'compound_statement':([25,35,38,],[29,37,40,]),'CUR_RPAREN':([27,],[32,]),'ELSEIF':([29,],[34,]),'ENDFOR':([37,],[39,]),'ENDIF':([40,],[41,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'function_declaration':([0,],[1,]),}
+_lr_goto_items = {'program':([0,],[1,]),'pipeline':([0,],[2,]),'function_declaration':([0,],[3,]),'array_declaration':([0,],[4,]),'nested_if_statement':([0,],[5,]),'expression':([0,10,34,],[6,17,36,]),'for_loop':([0,],[7,]),'list_expression':([0,26,],[8,31,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -26,14 +26,21 @@ for _k, _v in _lr_goto_items.items():
        _lr_goto[_x][_k] = _y
 del _lr_goto_items
 _lr_productions = [
-  ("S' -> function_declaration","S'",1,None,None,None),
-  ('function_declaration -> IDENTIFIER LPAREN RPAREN CUR_LPAREN CUR_RPAREN','function_declaration',5,'p_function_declaration','yacc_project.py',12),
-  ('pipeline -> IDENTIFIER PIPE IDENTIFIER','pipeline',3,'p_pipeline','yacc_project.py',44),
-  ('array_declaration -> IDENTIFIER EQUALS LPAREN RPAREN','array_declaration',4,'p_array_declaration','yacc_project.py',52),
-  ('nested_if_statement -> IF expression THEN compound_statement ELSEIF expression THEN compound_statement ENDIF','nested_if_statement',9,'p_nested_if_statement','yacc_project.py',65),
-  ('expression -> IDENTIFIER','expression',1,'p_expression','yacc_project.py',80),
-  ('expression -> expression COMMA IDENTIFIER','expression',3,'p_expression','yacc_project.py',81),
-  ('for_loop -> FOR IDENTIFIER IN list_expression DO compound_statement ENDFOR','for_loop',7,'p_for_loop','yacc_project.py',93),
-  ('list_expression -> IDENTIFIER','list_expression',1,'p_list_expression','yacc_project.py',103),
-  ('list_expression -> list_expression COMMA IDENTIFIER','list_expression',3,'p_list_expression','yacc_project.py',104),
+  ("S' -> program","S'",1,None,None,None),
+  ('program -> pipeline','program',1,'p_program','yacc_project.py',10),
+  ('program -> function_declaration','program',1,'p_program','yacc_project.py',11),
+  ('program -> array_declaration','program',1,'p_program','yacc_project.py',12),
+  ('program -> nested_if_statement','program',1,'p_program','yacc_project.py',13),
+  ('program -> expression','program',1,'p_program','yacc_project.py',14),
+  ('program -> for_loop','program',1,'p_program','yacc_project.py',15),
+  ('program -> list_expression','program',1,'p_program','yacc_project.py',16),
+  ('pipeline -> IDENTIFIER PIPE IDENTIFIER','pipeline',3,'p_pipeline','yacc_project.py',22),
+  ('function_declaration -> IDENTIFIER LPAREN RPAREN CUR_LPAREN CUR_RPAREN','function_declaration',5,'p_function_declaration','yacc_project.py',29),
+  ('array_declaration -> IDENTIFIER EQUALS LPAREN IDENTIFIER RPAREN','array_declaration',5,'p_array_declaration','yacc_project.py',63),
+  ('nested_if_statement -> IF expression THEN compound_statement ELSEIF expression THEN compound_statement ENDIF','nested_if_statement',9,'p_nested_if_statement','yacc_project.py',76),
+  ('expression -> IDENTIFIER','expression',1,'p_expression','yacc_project.py',91),
+  ('expression -> expression COMMA IDENTIFIER','expression',3,'p_expression','yacc_project.py',92),
+  ('for_loop -> FOR IDENTIFIER IN list_expression DO compound_statement ENDFOR','for_loop',7,'p_for_loop','yacc_project.py',104),
+  ('list_expression -> IDENTIFIER','list_expression',1,'p_list_expression','yacc_project.py',114),
+  ('list_expression -> list_expression COMMA IDENTIFIER','list_expression',3,'p_list_expression','yacc_project.py',115),
 ]
