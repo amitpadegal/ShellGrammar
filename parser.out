@@ -1,0 +1,118 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    ARGUMENTS
+    ARGUMENT_LIST
+    ARRAY
+    ARRAY_DECLARATION
+    COMMAND
+    FUNCTION
+    LIST
+    NON_NULL
+    WHITESPACE
+
+Grammar
+
+Rule 0     S' -> function_declaration
+Rule 1     function_declaration -> IDENTIFIER LPAREN RPAREN CUR_LPAREN CUR_RPAREN
+Rule 2     pipeline -> IDENTIFIER PIPE IDENTIFIER
+Rule 3     array_declaration -> IDENTIFIER EQUALS LPAREN RPAREN
+Rule 4     nested_if_statement -> IF expression THEN compound_statement ELSEIF expression THEN compound_statement ENDIF
+Rule 5     expression -> IDENTIFIER
+Rule 6     expression -> expression COMMA IDENTIFIER
+Rule 7     for_loop -> FOR IDENTIFIER IN list_expression DO compound_statement ENDFOR
+Rule 8     list_expression -> IDENTIFIER
+Rule 9     list_expression -> list_expression COMMA IDENTIFIER
+
+Terminals, with rules where they appear
+
+ARGUMENTS            : 
+ARGUMENT_LIST        : 
+ARRAY                : 
+ARRAY_DECLARATION    : 
+COMMA                : 6 9
+COMMAND              : 
+CUR_LPAREN           : 1
+CUR_RPAREN           : 1
+DO                   : 7
+ELSEIF               : 4
+ENDFOR               : 7
+ENDIF                : 4
+EQUALS               : 3
+FOR                  : 7
+FUNCTION             : 
+IDENTIFIER           : 1 2 2 3 5 6 7 8 9
+IF                   : 4
+IN                   : 7
+LIST                 : 
+LPAREN               : 1 3
+NON_NULL             : 
+PIPE                 : 2
+RPAREN               : 1 3
+THEN                 : 4 4
+WHITESPACE           : 
+compound_statement   : 4 4 7
+error                : 
+
+Nonterminals, with rules where they appear
+
+array_declaration    : 
+expression           : 4 4 6
+for_loop             : 
+function_declaration : 0
+list_expression      : 7 9
+nested_if_statement  : 
+pipeline             : 
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . function_declaration
+    (1) function_declaration -> . IDENTIFIER LPAREN RPAREN CUR_LPAREN CUR_RPAREN
+
+    IDENTIFIER      shift and go to state 2
+
+    function_declaration           shift and go to state 1
+
+state 1
+
+    (0) S' -> function_declaration .
+
+
+
+state 2
+
+    (1) function_declaration -> IDENTIFIER . LPAREN RPAREN CUR_LPAREN CUR_RPAREN
+
+    LPAREN          shift and go to state 3
+
+
+state 3
+
+    (1) function_declaration -> IDENTIFIER LPAREN . RPAREN CUR_LPAREN CUR_RPAREN
+
+    RPAREN          shift and go to state 4
+
+
+state 4
+
+    (1) function_declaration -> IDENTIFIER LPAREN RPAREN . CUR_LPAREN CUR_RPAREN
+
+    CUR_LPAREN      shift and go to state 5
+
+
+state 5
+
+    (1) function_declaration -> IDENTIFIER LPAREN RPAREN CUR_LPAREN . CUR_RPAREN
+
+    CUR_RPAREN      shift and go to state 6
+
+
+state 6
+
+    (1) function_declaration -> IDENTIFIER LPAREN RPAREN CUR_LPAREN CUR_RPAREN .
+
+    $end            reduce using rule 1 (function_declaration -> IDENTIFIER LPAREN RPAREN CUR_LPAREN CUR_RPAREN .)
+
