@@ -7,10 +7,14 @@ Unused terminals:
     ARRAY
     ARRAY_DECLARATION
     COMMAND
+    DO
+    ENDFOR
+    FOR
     FUNCTION
+    IN
     LIST
     NON_NULL
-    WHITESPACE
+    compound_statement
 
 Grammar
 
@@ -25,12 +29,20 @@ Rule 7     program -> list_expression
 Rule 8     pipeline -> IDENTIFIER PIPE IDENTIFIER
 Rule 9     function_declaration -> IDENTIFIER LPAREN RPAREN CUR_LPAREN CUR_RPAREN
 Rule 10    array_declaration -> IDENTIFIER EQUALS LPAREN array_items RPAREN
-Rule 11    nested_if_statement -> IF expression THEN compound_statement ELSEIF expression THEN compound_statement ENDIF
-Rule 12    expression -> IDENTIFIER
-Rule 13    expression -> expression COMMA IDENTIFIER
-Rule 14    for_loop -> FOR IDENTIFIER IN list_expression DO compound_statement ENDFOR
-Rule 15    list_expression -> IDENTIFIER
-Rule 16    list_expression -> list_expression COMMA IDENTIFIER
+Rule 11    array_items -> IDENTIFIER array_items
+Rule 12    array_items -> IDENTIFIER WHITESPACE IDENTIFIER
+Rule 13    array_items -> IDENTIFIER
+Rule 14    nested_if_statement -> IF expression THEN block ELSEIF expression THEN block ENDIF
+Rule 15    expression -> IDENTIFIER
+Rule 16    expression -> expression COMMA IDENTIFIER
+Rule 17    for_loop -> IDENTIFIER LPAREN IDENTIFIER
+Rule 18    list_expression -> IDENTIFIER
+Rule 19    list_expression -> list_expression COMMA IDENTIFIER
+Rule 20    block -> CUR_LPAREN program CUR_RPAREN
+Rule 21    block -> statement
+Rule 22    statement -> expression
+Rule 23    statement -> nested_if_statement
+Rule 24    statement -> for_loop
 
 Terminals, with rules where they appear
 
@@ -38,39 +50,545 @@ ARGUMENTS            :
 ARGUMENT_LIST        : 
 ARRAY                : 
 ARRAY_DECLARATION    : 
-COMMA                : 13 16
+COMMA                : 16 19
 COMMAND              : 
-CUR_LPAREN           : 9
-CUR_RPAREN           : 9
-DO                   : 14
-ELSEIF               : 11
-ENDFOR               : 14
-ENDIF                : 11
+CUR_LPAREN           : 9 20
+CUR_RPAREN           : 9 20
+DO                   : 
+ELSEIF               : 14
+ENDFOR               : 
+ENDIF                : 14
 EQUALS               : 10
-FOR                  : 14
+FOR                  : 
 FUNCTION             : 
-IDENTIFIER           : 8 8 9 10 12 13 14 15 16
-IF                   : 11
-IN                   : 14
+IDENTIFIER           : 8 8 9 10 11 12 12 13 15 16 17 17 18 19
+IF                   : 14
+IN                   : 
 LIST                 : 
-LPAREN               : 9 10
+LPAREN               : 9 10 17
 NON_NULL             : 
 PIPE                 : 8
 RPAREN               : 9 10
-THEN                 : 11 11
-WHITESPACE           : 
-compound_statement   : 11 11 14
+THEN                 : 14 14
+WHITESPACE           : 12
+compound_statement   : 
 error                : 
 
 Nonterminals, with rules where they appear
 
 array_declaration    : 3
-array_items          : 10
-expression           : 5 11 11 13
-for_loop             : 6
+array_items          : 10 11
+block                : 14 14
+expression           : 5 14 14 16 22
+for_loop             : 6 24
 function_declaration : 2
-list_expression      : 7 14 16
-nested_if_statement  : 4
+list_expression      : 7 19
+nested_if_statement  : 4 23
 pipeline             : 1
-program              : 0
+program              : 20 0
+statement            : 21
 
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . program
+    (1) program -> . pipeline
+    (2) program -> . function_declaration
+    (3) program -> . array_declaration
+    (4) program -> . nested_if_statement
+    (5) program -> . expression
+    (6) program -> . for_loop
+    (7) program -> . list_expression
+    (8) pipeline -> . IDENTIFIER PIPE IDENTIFIER
+    (9) function_declaration -> . IDENTIFIER LPAREN RPAREN CUR_LPAREN CUR_RPAREN
+    (10) array_declaration -> . IDENTIFIER EQUALS LPAREN array_items RPAREN
+    (14) nested_if_statement -> . IF expression THEN block ELSEIF expression THEN block ENDIF
+    (15) expression -> . IDENTIFIER
+    (16) expression -> . expression COMMA IDENTIFIER
+    (17) for_loop -> . IDENTIFIER LPAREN IDENTIFIER
+    (18) list_expression -> . IDENTIFIER
+    (19) list_expression -> . list_expression COMMA IDENTIFIER
+
+    IDENTIFIER      shift and go to state 9
+    IF              shift and go to state 10
+
+    program                        shift and go to state 1
+    pipeline                       shift and go to state 2
+    function_declaration           shift and go to state 3
+    array_declaration              shift and go to state 4
+    nested_if_statement            shift and go to state 5
+    expression                     shift and go to state 6
+    for_loop                       shift and go to state 7
+    list_expression                shift and go to state 8
+
+state 1
+
+    (0) S' -> program .
+
+
+
+state 2
+
+    (1) program -> pipeline .
+
+    $end            reduce using rule 1 (program -> pipeline .)
+    CUR_RPAREN      reduce using rule 1 (program -> pipeline .)
+
+
+state 3
+
+    (2) program -> function_declaration .
+
+    $end            reduce using rule 2 (program -> function_declaration .)
+    CUR_RPAREN      reduce using rule 2 (program -> function_declaration .)
+
+
+state 4
+
+    (3) program -> array_declaration .
+
+    $end            reduce using rule 3 (program -> array_declaration .)
+    CUR_RPAREN      reduce using rule 3 (program -> array_declaration .)
+
+
+state 5
+
+    (4) program -> nested_if_statement .
+
+    $end            reduce using rule 4 (program -> nested_if_statement .)
+    CUR_RPAREN      reduce using rule 4 (program -> nested_if_statement .)
+
+
+state 6
+
+    (5) program -> expression .
+    (16) expression -> expression . COMMA IDENTIFIER
+
+    $end            reduce using rule 5 (program -> expression .)
+    CUR_RPAREN      reduce using rule 5 (program -> expression .)
+    COMMA           shift and go to state 11
+
+
+state 7
+
+    (6) program -> for_loop .
+
+    $end            reduce using rule 6 (program -> for_loop .)
+    CUR_RPAREN      reduce using rule 6 (program -> for_loop .)
+
+
+state 8
+
+    (7) program -> list_expression .
+    (19) list_expression -> list_expression . COMMA IDENTIFIER
+
+    $end            reduce using rule 7 (program -> list_expression .)
+    CUR_RPAREN      reduce using rule 7 (program -> list_expression .)
+    COMMA           shift and go to state 12
+
+
+state 9
+
+    (8) pipeline -> IDENTIFIER . PIPE IDENTIFIER
+    (9) function_declaration -> IDENTIFIER . LPAREN RPAREN CUR_LPAREN CUR_RPAREN
+    (10) array_declaration -> IDENTIFIER . EQUALS LPAREN array_items RPAREN
+    (15) expression -> IDENTIFIER .
+    (17) for_loop -> IDENTIFIER . LPAREN IDENTIFIER
+    (18) list_expression -> IDENTIFIER .
+
+  ! reduce/reduce conflict for COMMA resolved using rule 15 (expression -> IDENTIFIER .)
+  ! reduce/reduce conflict for $end resolved using rule 15 (expression -> IDENTIFIER .)
+  ! reduce/reduce conflict for CUR_RPAREN resolved using rule 15 (expression -> IDENTIFIER .)
+    PIPE            shift and go to state 13
+    LPAREN          shift and go to state 14
+    EQUALS          shift and go to state 15
+    COMMA           reduce using rule 15 (expression -> IDENTIFIER .)
+    $end            reduce using rule 15 (expression -> IDENTIFIER .)
+    CUR_RPAREN      reduce using rule 15 (expression -> IDENTIFIER .)
+
+  ! COMMA           [ reduce using rule 18 (list_expression -> IDENTIFIER .) ]
+  ! $end            [ reduce using rule 18 (list_expression -> IDENTIFIER .) ]
+  ! CUR_RPAREN      [ reduce using rule 18 (list_expression -> IDENTIFIER .) ]
+
+
+state 10
+
+    (14) nested_if_statement -> IF . expression THEN block ELSEIF expression THEN block ENDIF
+    (15) expression -> . IDENTIFIER
+    (16) expression -> . expression COMMA IDENTIFIER
+
+    IDENTIFIER      shift and go to state 17
+
+    expression                     shift and go to state 16
+
+state 11
+
+    (16) expression -> expression COMMA . IDENTIFIER
+
+    IDENTIFIER      shift and go to state 18
+
+
+state 12
+
+    (19) list_expression -> list_expression COMMA . IDENTIFIER
+
+    IDENTIFIER      shift and go to state 19
+
+
+state 13
+
+    (8) pipeline -> IDENTIFIER PIPE . IDENTIFIER
+
+    IDENTIFIER      shift and go to state 20
+
+
+state 14
+
+    (9) function_declaration -> IDENTIFIER LPAREN . RPAREN CUR_LPAREN CUR_RPAREN
+    (17) for_loop -> IDENTIFIER LPAREN . IDENTIFIER
+
+    RPAREN          shift and go to state 22
+    IDENTIFIER      shift and go to state 21
+
+
+state 15
+
+    (10) array_declaration -> IDENTIFIER EQUALS . LPAREN array_items RPAREN
+
+    LPAREN          shift and go to state 23
+
+
+state 16
+
+    (14) nested_if_statement -> IF expression . THEN block ELSEIF expression THEN block ENDIF
+    (16) expression -> expression . COMMA IDENTIFIER
+
+    THEN            shift and go to state 24
+    COMMA           shift and go to state 11
+
+
+state 17
+
+    (15) expression -> IDENTIFIER .
+
+    THEN            reduce using rule 15 (expression -> IDENTIFIER .)
+    COMMA           reduce using rule 15 (expression -> IDENTIFIER .)
+
+
+state 18
+
+    (16) expression -> expression COMMA IDENTIFIER .
+
+    COMMA           reduce using rule 16 (expression -> expression COMMA IDENTIFIER .)
+    $end            reduce using rule 16 (expression -> expression COMMA IDENTIFIER .)
+    THEN            reduce using rule 16 (expression -> expression COMMA IDENTIFIER .)
+    ELSEIF          reduce using rule 16 (expression -> expression COMMA IDENTIFIER .)
+    CUR_RPAREN      reduce using rule 16 (expression -> expression COMMA IDENTIFIER .)
+    ENDIF           reduce using rule 16 (expression -> expression COMMA IDENTIFIER .)
+
+
+state 19
+
+    (19) list_expression -> list_expression COMMA IDENTIFIER .
+
+    COMMA           reduce using rule 19 (list_expression -> list_expression COMMA IDENTIFIER .)
+    $end            reduce using rule 19 (list_expression -> list_expression COMMA IDENTIFIER .)
+    CUR_RPAREN      reduce using rule 19 (list_expression -> list_expression COMMA IDENTIFIER .)
+
+
+state 20
+
+    (8) pipeline -> IDENTIFIER PIPE IDENTIFIER .
+
+    $end            reduce using rule 8 (pipeline -> IDENTIFIER PIPE IDENTIFIER .)
+    CUR_RPAREN      reduce using rule 8 (pipeline -> IDENTIFIER PIPE IDENTIFIER .)
+
+
+state 21
+
+    (17) for_loop -> IDENTIFIER LPAREN IDENTIFIER .
+
+    $end            reduce using rule 17 (for_loop -> IDENTIFIER LPAREN IDENTIFIER .)
+    ELSEIF          reduce using rule 17 (for_loop -> IDENTIFIER LPAREN IDENTIFIER .)
+    CUR_RPAREN      reduce using rule 17 (for_loop -> IDENTIFIER LPAREN IDENTIFIER .)
+    ENDIF           reduce using rule 17 (for_loop -> IDENTIFIER LPAREN IDENTIFIER .)
+
+
+state 22
+
+    (9) function_declaration -> IDENTIFIER LPAREN RPAREN . CUR_LPAREN CUR_RPAREN
+
+    CUR_LPAREN      shift and go to state 25
+
+
+state 23
+
+    (10) array_declaration -> IDENTIFIER EQUALS LPAREN . array_items RPAREN
+    (11) array_items -> . IDENTIFIER array_items
+    (12) array_items -> . IDENTIFIER WHITESPACE IDENTIFIER
+    (13) array_items -> . IDENTIFIER
+
+    IDENTIFIER      shift and go to state 26
+
+    array_items                    shift and go to state 27
+
+state 24
+
+    (14) nested_if_statement -> IF expression THEN . block ELSEIF expression THEN block ENDIF
+    (20) block -> . CUR_LPAREN program CUR_RPAREN
+    (21) block -> . statement
+    (22) statement -> . expression
+    (23) statement -> . nested_if_statement
+    (24) statement -> . for_loop
+    (15) expression -> . IDENTIFIER
+    (16) expression -> . expression COMMA IDENTIFIER
+    (14) nested_if_statement -> . IF expression THEN block ELSEIF expression THEN block ENDIF
+    (17) for_loop -> . IDENTIFIER LPAREN IDENTIFIER
+
+    CUR_LPAREN      shift and go to state 30
+    IDENTIFIER      shift and go to state 34
+    IF              shift and go to state 10
+
+    expression                     shift and go to state 28
+    block                          shift and go to state 29
+    statement                      shift and go to state 31
+    nested_if_statement            shift and go to state 32
+    for_loop                       shift and go to state 33
+
+state 25
+
+    (9) function_declaration -> IDENTIFIER LPAREN RPAREN CUR_LPAREN . CUR_RPAREN
+
+    CUR_RPAREN      shift and go to state 35
+
+
+state 26
+
+    (11) array_items -> IDENTIFIER . array_items
+    (12) array_items -> IDENTIFIER . WHITESPACE IDENTIFIER
+    (13) array_items -> IDENTIFIER .
+    (11) array_items -> . IDENTIFIER array_items
+    (12) array_items -> . IDENTIFIER WHITESPACE IDENTIFIER
+    (13) array_items -> . IDENTIFIER
+
+    WHITESPACE      shift and go to state 37
+    RPAREN          reduce using rule 13 (array_items -> IDENTIFIER .)
+    IDENTIFIER      shift and go to state 26
+
+    array_items                    shift and go to state 36
+
+state 27
+
+    (10) array_declaration -> IDENTIFIER EQUALS LPAREN array_items . RPAREN
+
+    RPAREN          shift and go to state 38
+
+
+state 28
+
+    (22) statement -> expression .
+    (16) expression -> expression . COMMA IDENTIFIER
+
+    ELSEIF          reduce using rule 22 (statement -> expression .)
+    ENDIF           reduce using rule 22 (statement -> expression .)
+    COMMA           shift and go to state 11
+
+
+state 29
+
+    (14) nested_if_statement -> IF expression THEN block . ELSEIF expression THEN block ENDIF
+
+    ELSEIF          shift and go to state 39
+
+
+state 30
+
+    (20) block -> CUR_LPAREN . program CUR_RPAREN
+    (1) program -> . pipeline
+    (2) program -> . function_declaration
+    (3) program -> . array_declaration
+    (4) program -> . nested_if_statement
+    (5) program -> . expression
+    (6) program -> . for_loop
+    (7) program -> . list_expression
+    (8) pipeline -> . IDENTIFIER PIPE IDENTIFIER
+    (9) function_declaration -> . IDENTIFIER LPAREN RPAREN CUR_LPAREN CUR_RPAREN
+    (10) array_declaration -> . IDENTIFIER EQUALS LPAREN array_items RPAREN
+    (14) nested_if_statement -> . IF expression THEN block ELSEIF expression THEN block ENDIF
+    (15) expression -> . IDENTIFIER
+    (16) expression -> . expression COMMA IDENTIFIER
+    (17) for_loop -> . IDENTIFIER LPAREN IDENTIFIER
+    (18) list_expression -> . IDENTIFIER
+    (19) list_expression -> . list_expression COMMA IDENTIFIER
+
+    IDENTIFIER      shift and go to state 9
+    IF              shift and go to state 10
+
+    program                        shift and go to state 40
+    pipeline                       shift and go to state 2
+    function_declaration           shift and go to state 3
+    array_declaration              shift and go to state 4
+    nested_if_statement            shift and go to state 5
+    expression                     shift and go to state 6
+    for_loop                       shift and go to state 7
+    list_expression                shift and go to state 8
+
+state 31
+
+    (21) block -> statement .
+
+    ELSEIF          reduce using rule 21 (block -> statement .)
+    ENDIF           reduce using rule 21 (block -> statement .)
+
+
+state 32
+
+    (23) statement -> nested_if_statement .
+
+    ELSEIF          reduce using rule 23 (statement -> nested_if_statement .)
+    ENDIF           reduce using rule 23 (statement -> nested_if_statement .)
+
+
+state 33
+
+    (24) statement -> for_loop .
+
+    ELSEIF          reduce using rule 24 (statement -> for_loop .)
+    ENDIF           reduce using rule 24 (statement -> for_loop .)
+
+
+state 34
+
+    (15) expression -> IDENTIFIER .
+    (17) for_loop -> IDENTIFIER . LPAREN IDENTIFIER
+
+    COMMA           reduce using rule 15 (expression -> IDENTIFIER .)
+    ELSEIF          reduce using rule 15 (expression -> IDENTIFIER .)
+    ENDIF           reduce using rule 15 (expression -> IDENTIFIER .)
+    LPAREN          shift and go to state 41
+
+
+state 35
+
+    (9) function_declaration -> IDENTIFIER LPAREN RPAREN CUR_LPAREN CUR_RPAREN .
+
+    $end            reduce using rule 9 (function_declaration -> IDENTIFIER LPAREN RPAREN CUR_LPAREN CUR_RPAREN .)
+    CUR_RPAREN      reduce using rule 9 (function_declaration -> IDENTIFIER LPAREN RPAREN CUR_LPAREN CUR_RPAREN .)
+
+
+state 36
+
+    (11) array_items -> IDENTIFIER array_items .
+
+    RPAREN          reduce using rule 11 (array_items -> IDENTIFIER array_items .)
+
+
+state 37
+
+    (12) array_items -> IDENTIFIER WHITESPACE . IDENTIFIER
+
+    IDENTIFIER      shift and go to state 42
+
+
+state 38
+
+    (10) array_declaration -> IDENTIFIER EQUALS LPAREN array_items RPAREN .
+
+    $end            reduce using rule 10 (array_declaration -> IDENTIFIER EQUALS LPAREN array_items RPAREN .)
+    CUR_RPAREN      reduce using rule 10 (array_declaration -> IDENTIFIER EQUALS LPAREN array_items RPAREN .)
+
+
+state 39
+
+    (14) nested_if_statement -> IF expression THEN block ELSEIF . expression THEN block ENDIF
+    (15) expression -> . IDENTIFIER
+    (16) expression -> . expression COMMA IDENTIFIER
+
+    IDENTIFIER      shift and go to state 17
+
+    expression                     shift and go to state 43
+
+state 40
+
+    (20) block -> CUR_LPAREN program . CUR_RPAREN
+
+    CUR_RPAREN      shift and go to state 44
+
+
+state 41
+
+    (17) for_loop -> IDENTIFIER LPAREN . IDENTIFIER
+
+    IDENTIFIER      shift and go to state 21
+
+
+state 42
+
+    (12) array_items -> IDENTIFIER WHITESPACE IDENTIFIER .
+
+    RPAREN          reduce using rule 12 (array_items -> IDENTIFIER WHITESPACE IDENTIFIER .)
+
+
+state 43
+
+    (14) nested_if_statement -> IF expression THEN block ELSEIF expression . THEN block ENDIF
+    (16) expression -> expression . COMMA IDENTIFIER
+
+    THEN            shift and go to state 45
+    COMMA           shift and go to state 11
+
+
+state 44
+
+    (20) block -> CUR_LPAREN program CUR_RPAREN .
+
+    ELSEIF          reduce using rule 20 (block -> CUR_LPAREN program CUR_RPAREN .)
+    ENDIF           reduce using rule 20 (block -> CUR_LPAREN program CUR_RPAREN .)
+
+
+state 45
+
+    (14) nested_if_statement -> IF expression THEN block ELSEIF expression THEN . block ENDIF
+    (20) block -> . CUR_LPAREN program CUR_RPAREN
+    (21) block -> . statement
+    (22) statement -> . expression
+    (23) statement -> . nested_if_statement
+    (24) statement -> . for_loop
+    (15) expression -> . IDENTIFIER
+    (16) expression -> . expression COMMA IDENTIFIER
+    (14) nested_if_statement -> . IF expression THEN block ELSEIF expression THEN block ENDIF
+    (17) for_loop -> . IDENTIFIER LPAREN IDENTIFIER
+
+    CUR_LPAREN      shift and go to state 30
+    IDENTIFIER      shift and go to state 34
+    IF              shift and go to state 10
+
+    expression                     shift and go to state 28
+    block                          shift and go to state 46
+    statement                      shift and go to state 31
+    nested_if_statement            shift and go to state 32
+    for_loop                       shift and go to state 33
+
+state 46
+
+    (14) nested_if_statement -> IF expression THEN block ELSEIF expression THEN block . ENDIF
+
+    ENDIF           shift and go to state 47
+
+
+state 47
+
+    (14) nested_if_statement -> IF expression THEN block ELSEIF expression THEN block ENDIF .
+
+    $end            reduce using rule 14 (nested_if_statement -> IF expression THEN block ELSEIF expression THEN block ENDIF .)
+    ELSEIF          reduce using rule 14 (nested_if_statement -> IF expression THEN block ELSEIF expression THEN block ENDIF .)
+    CUR_RPAREN      reduce using rule 14 (nested_if_statement -> IF expression THEN block ELSEIF expression THEN block ENDIF .)
+    ENDIF           reduce using rule 14 (nested_if_statement -> IF expression THEN block ELSEIF expression THEN block ENDIF .)
+
+WARNING: 
+WARNING: Conflicts:
+WARNING: 
+WARNING: reduce/reduce conflict in state 9 resolved using rule (expression -> IDENTIFIER)
+WARNING: rejected rule (list_expression -> IDENTIFIER) in state 9
+WARNING: Rule (list_expression -> IDENTIFIER) is never reduced

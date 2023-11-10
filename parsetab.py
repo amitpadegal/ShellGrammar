@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'leftIDENTIFIERleftPIPEARGUMENTS ARGUMENT_LIST ARRAY ARRAY_DECLARATION COMMA COMMAND CUR_LPAREN CUR_RPAREN DO ELSEIF ENDFOR ENDIF EQUALS FOR FUNCTION IDENTIFIER IF IN LIST LPAREN NON_NULL PIPE RPAREN THEN WHITESPACE compound_statementprogram : pipeline\n               | function_declaration\n               | array_declaration\n               | nested_if_statement\n               | expression\n               | for_loop\n               | list_expression\n    pipeline : IDENTIFIER PIPE IDENTIFIER function_declaration : IDENTIFIER LPAREN RPAREN CUR_LPAREN CUR_RPARENarray_declaration : IDENTIFIER EQUALS LPAREN IDENTIFIER RPARENnested_if_statement : IF expression THEN compound_statement ELSEIF expression THEN compound_statement ENDIFexpression : IDENTIFIER\n                          | expression COMMA IDENTIFIER\n\n    for_loop : FOR IDENTIFIER IN list_expression DO compound_statement ENDFORlist_expression : IDENTIFIER\n                      | list_expression COMMA IDENTIFIER\n    '
+_lr_signature = 'leftIDENTIFIERleftPIPEARGUMENTS ARGUMENT_LIST ARRAY ARRAY_DECLARATION COMMA COMMAND CUR_LPAREN CUR_RPAREN DO ELSEIF ENDFOR ENDIF EQUALS FOR FUNCTION IDENTIFIER IF IN LIST LPAREN NON_NULL PIPE RPAREN THEN WHITESPACE compound_statementprogram : pipeline\n               | function_declaration\n               | array_declaration\n               | nested_if_statement\n               | expression\n               | for_loop\n               | list_expression\n    pipeline : IDENTIFIER PIPE IDENTIFIERfunction_declaration : IDENTIFIER LPAREN RPAREN CUR_LPAREN CUR_RPARENarray_declaration : IDENTIFIER EQUALS LPAREN array_items RPARENarray_items : IDENTIFIER array_items\n                   | IDENTIFIER WHITESPACE IDENTIFIER\n                   | IDENTIFIER\n    nested_if_statement : IF expression THEN block ELSEIF expression THEN block ENDIFexpression : IDENTIFIER\n                  | expression COMMA IDENTIFIER\n    for_loop :  IDENTIFIER LPAREN IDENTIFIERlist_expression : IDENTIFIER\n                      | list_expression COMMA IDENTIFIER\n    block : CUR_LPAREN program CUR_RPAREN\n             | statement\n    statement : expression\n                 | nested_if_statement\n                 | for_loop\n    '
     
-_lr_action_items = {'IDENTIFIER':([0,10,11,12,13,14,24,26,34,],[9,18,19,20,21,22,28,30,18,]),'IF':([0,],[10,]),'FOR':([0,],[11,]),'$end':([1,2,3,4,5,6,7,8,9,20,21,22,32,33,39,41,],[0,-1,-2,-3,-4,-5,-6,-7,-12,-13,-16,-8,-9,-10,-14,-11,]),'COMMA':([6,8,9,17,18,20,21,30,31,36,],[12,13,-12,12,-12,-13,-16,-15,13,12,]),'PIPE':([9,],[14,]),'LPAREN':([9,16,],[15,24,]),'EQUALS':([9,],[16,]),'RPAREN':([15,28,],[23,33,]),'THEN':([17,18,20,36,],[25,-12,-13,38,]),'IN':([19,],[26,]),'DO':([21,30,31,],[-16,-15,35,]),'CUR_LPAREN':([23,],[27,]),'compound_statement':([25,35,38,],[29,37,40,]),'CUR_RPAREN':([27,],[32,]),'ELSEIF':([29,],[34,]),'ENDFOR':([37,],[39,]),'ENDIF':([40,],[41,]),}
+_lr_action_items = {'IDENTIFIER':([0,10,11,12,13,14,23,24,26,30,37,39,41,45,],[9,17,18,19,20,21,26,34,26,9,42,17,21,34,]),'IF':([0,24,30,45,],[10,10,10,10,]),'$end':([1,2,3,4,5,6,7,8,9,18,19,20,21,35,38,47,],[0,-1,-2,-3,-4,-5,-6,-7,-15,-16,-19,-8,-17,-9,-10,-14,]),'CUR_RPAREN':([2,3,4,5,6,7,8,9,18,19,20,21,25,35,38,40,47,],[-1,-2,-3,-4,-5,-6,-7,-15,-16,-19,-8,-17,35,-9,-10,44,-14,]),'COMMA':([6,8,9,16,17,18,19,28,34,43,],[11,12,-15,11,-15,-16,-19,11,-15,11,]),'PIPE':([9,],[13,]),'LPAREN':([9,15,34,],[14,23,41,]),'EQUALS':([9,],[15,]),'RPAREN':([14,26,27,36,42,],[22,-13,38,-11,-12,]),'THEN':([16,17,18,43,],[24,-15,-16,45,]),'ELSEIF':([18,21,28,29,31,32,33,34,44,47,],[-16,-17,-22,39,-21,-23,-24,-15,-20,-14,]),'ENDIF':([18,21,28,31,32,33,34,44,46,47,],[-16,-17,-22,-21,-23,-24,-15,-20,47,-14,]),'CUR_LPAREN':([22,24,45,],[25,30,30,]),'WHITESPACE':([26,],[37,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'program':([0,],[1,]),'pipeline':([0,],[2,]),'function_declaration':([0,],[3,]),'array_declaration':([0,],[4,]),'nested_if_statement':([0,],[5,]),'expression':([0,10,34,],[6,17,36,]),'for_loop':([0,],[7,]),'list_expression':([0,26,],[8,31,]),}
+_lr_goto_items = {'program':([0,30,],[1,40,]),'pipeline':([0,30,],[2,2,]),'function_declaration':([0,30,],[3,3,]),'array_declaration':([0,30,],[4,4,]),'nested_if_statement':([0,24,30,45,],[5,32,5,32,]),'expression':([0,10,24,30,39,45,],[6,16,28,6,43,28,]),'for_loop':([0,24,30,45,],[7,33,7,33,]),'list_expression':([0,30,],[8,8,]),'array_items':([23,26,],[27,36,]),'block':([24,45,],[29,46,]),'statement':([24,45,],[31,31,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -27,20 +27,28 @@ for _k, _v in _lr_goto_items.items():
 del _lr_goto_items
 _lr_productions = [
   ("S' -> program","S'",1,None,None,None),
-  ('program -> pipeline','program',1,'p_program','yacc_project.py',10),
-  ('program -> function_declaration','program',1,'p_program','yacc_project.py',11),
-  ('program -> array_declaration','program',1,'p_program','yacc_project.py',12),
-  ('program -> nested_if_statement','program',1,'p_program','yacc_project.py',13),
-  ('program -> expression','program',1,'p_program','yacc_project.py',14),
-  ('program -> for_loop','program',1,'p_program','yacc_project.py',15),
-  ('program -> list_expression','program',1,'p_program','yacc_project.py',16),
-  ('pipeline -> IDENTIFIER PIPE IDENTIFIER','pipeline',3,'p_pipeline','yacc_project.py',22),
-  ('function_declaration -> IDENTIFIER LPAREN RPAREN CUR_LPAREN CUR_RPAREN','function_declaration',5,'p_function_declaration','yacc_project.py',29),
-  ('array_declaration -> IDENTIFIER EQUALS LPAREN IDENTIFIER RPAREN','array_declaration',5,'p_array_declaration','yacc_project.py',63),
-  ('nested_if_statement -> IF expression THEN compound_statement ELSEIF expression THEN compound_statement ENDIF','nested_if_statement',9,'p_nested_if_statement','yacc_project.py',76),
-  ('expression -> IDENTIFIER','expression',1,'p_expression','yacc_project.py',91),
-  ('expression -> expression COMMA IDENTIFIER','expression',3,'p_expression','yacc_project.py',92),
-  ('for_loop -> FOR IDENTIFIER IN list_expression DO compound_statement ENDFOR','for_loop',7,'p_for_loop','yacc_project.py',104),
-  ('list_expression -> IDENTIFIER','list_expression',1,'p_list_expression','yacc_project.py',114),
-  ('list_expression -> list_expression COMMA IDENTIFIER','list_expression',3,'p_list_expression','yacc_project.py',115),
+  ('program -> pipeline','program',1,'p_program','yacc_1.py',13),
+  ('program -> function_declaration','program',1,'p_program','yacc_1.py',14),
+  ('program -> array_declaration','program',1,'p_program','yacc_1.py',15),
+  ('program -> nested_if_statement','program',1,'p_program','yacc_1.py',16),
+  ('program -> expression','program',1,'p_program','yacc_1.py',17),
+  ('program -> for_loop','program',1,'p_program','yacc_1.py',18),
+  ('program -> list_expression','program',1,'p_program','yacc_1.py',19),
+  ('pipeline -> IDENTIFIER PIPE IDENTIFIER','pipeline',3,'p_pipeline','yacc_1.py',24),
+  ('function_declaration -> IDENTIFIER LPAREN RPAREN CUR_LPAREN CUR_RPAREN','function_declaration',5,'p_function_declaration','yacc_1.py',32),
+  ('array_declaration -> IDENTIFIER EQUALS LPAREN array_items RPAREN','array_declaration',5,'p_array_declaration','yacc_1.py',39),
+  ('array_items -> IDENTIFIER array_items','array_items',2,'p_array_items','yacc_1.py',47),
+  ('array_items -> IDENTIFIER WHITESPACE IDENTIFIER','array_items',3,'p_array_items','yacc_1.py',48),
+  ('array_items -> IDENTIFIER','array_items',1,'p_array_items','yacc_1.py',49),
+  ('nested_if_statement -> IF expression THEN block ELSEIF expression THEN block ENDIF','nested_if_statement',9,'p_nested_if_statement','yacc_1.py',61),
+  ('expression -> IDENTIFIER','expression',1,'p_expression','yacc_1.py',75),
+  ('expression -> expression COMMA IDENTIFIER','expression',3,'p_expression','yacc_1.py',76),
+  ('for_loop -> IDENTIFIER LPAREN IDENTIFIER','for_loop',3,'p_for_loop','yacc_1.py',84),
+  ('list_expression -> IDENTIFIER','list_expression',1,'p_list_expression','yacc_1.py',93),
+  ('list_expression -> list_expression COMMA IDENTIFIER','list_expression',3,'p_list_expression','yacc_1.py',94),
+  ('block -> CUR_LPAREN program CUR_RPAREN','block',3,'p_block','yacc_1.py',102),
+  ('block -> statement','block',1,'p_block','yacc_1.py',103),
+  ('statement -> expression','statement',1,'p_statement','yacc_1.py',112),
+  ('statement -> nested_if_statement','statement',1,'p_statement','yacc_1.py',113),
+  ('statement -> for_loop','statement',1,'p_statement','yacc_1.py',114),
 ]
